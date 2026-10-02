@@ -489,3 +489,47 @@ img { max-width: 100%; display: block; }
 /* ===== TOAST ===== */
 .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--amber); color: var(--bg); padding: 12px 22px; border-radius: 999px; font-weight: 600; font-size: 0.88rem; z-index: 500; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* ===== EXPERIENCE SECTION ===== */
+.experience-section {
+  padding: 80px 20px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.experience-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media (min-width: 720px) { .experience-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.exp-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  transition: all 0.3s ease;
+}
+.exp-card:hover {
+  border-color: var(--amber);
+  transform: translateY(-3px);
+  background: var(--surface-2);
+}
+.exp-icon {
+  width: 44px;
+  height: 44px;
+  color: var(--amber);
+  margin-bottom: 20px;
+}
+.exp-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+  color: var(--cream);
+}
+.exp-card p {
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
