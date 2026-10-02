@@ -77,7 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
   cartCheckout.addEventListener('click', () => {
     if (cart.length === 0) return;
     const list = cart.map((item, i) => `${i+1}. ${item.name}${item.qty > 1 ? ' x' + item.qty : ''}`).join('\n');
-    const msg = `Habari Muigai Inn [SITE],\n\nOda yangu:\n\n${list}\n\nTafadhali thibitisha bei na upatikane.`;
+    const msg = `Habari Muigai Inn [SITE],\n\nOrder yangu:\n\n${list}\n\nTafadhali thibitisha bei na kama ziko.`;
+cd ~/muigai-inn
+
     window.open(`https://wa.me/254719438751?text=${encodeURIComponent(msg)}`, '_blank');
   });
 
