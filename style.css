@@ -533,3 +533,93 @@ img { max-width: 100%; display: block; }
   color: var(--muted);
   line-height: 1.6;
 }
+
+/* ===== EVENTS SECTION — ALIVE ===== */
+.events-section {
+  position: relative;
+  overflow: hidden;
+}
+.events-section::before {
+  content: "";
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(229, 160, 84, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+.events-section .section-heading,
+.events-section .events-grid,
+.events-section .events-cta {
+  position: relative;
+  z-index: 1;
+}
+
+/* Event card base — subtle breathing glow */
+.event-card {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* NEXT UP badge — hidden by default */
+.next-up-badge {
+  display: none;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: var(--amber);
+  color: var(--bg);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 6px 12px;
+  border-radius: 999px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(229, 160, 84, 0.4);
+}
+
+/* When JS flags this card as next up */
+.event-card.next-up {
+  border-color: var(--amber);
+  background: linear-gradient(135deg, var(--surface-2) 0%, var(--surface) 100%);
+  box-shadow: 0 0 40px rgba(229, 160, 84, 0.2);
+  animation: breathe 3s ease-in-out infinite;
+}
+.event-card.next-up .next-up-badge {
+  display: inline-block;
+  animation: pulse-badge 2s ease-in-out infinite;
+}
+.event-card.next-up .event-day {
+  color: var(--amber-light);
+}
+
+/* Tonight indicator under badge */
+.event-card.next-up .event-time::before {
+  content: "● ";
+  color: #2E8B57;
+  font-size: 0.8em;
+}
+
+@keyframes breathe {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(229, 160, 84, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(229, 160, 84, 0.35);
+  }
+}
+
+@keyframes pulse-badge {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}

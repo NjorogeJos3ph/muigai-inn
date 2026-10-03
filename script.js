@@ -88,4 +88,37 @@ cd ~/muigai-inn
   });
 
   updateBadge(); renderCart();
+// ===== EVENT DAY HIGHLIGHT =====
+const today = new Date().getDay(); // 0=Sun ... 6=Sat
+const eventCards = document.querySelectorAll('.event-card[data-day]');
+const eventDays = Array.from(eventCards).map(c => parseInt(c.dataset.day));
+
+// Find next upcoming event (including today)
+let nextDay = null;
+let daysAway = null;
+for (let offset = 0; offset <= 7; offset++) {
+  const check = (today + offset) % 7;
+  if (eventDays.includes(check)) {
+    nextDay = check;
+    daysAway = offset;
+    break;
+  }
+}
+
+// Mark that card as "next up"
+if (nextDay !== null) {
+  eventCards.forEach(card => {
+    if (parseInt(card.dataset.day) === nextDay) {
+      card.classList.add('next-up');
+
+      // Update badge text based on timing
+      const badge = card.querySelector('.next-up-badge');
+      if (badge) {
+        if (daysAway === 0) badge.textContent = 'TONIGHT';
+        else if (daysAway === 1) badge.textContent = 'TOMORROW';
+        else badge.textContent = 'IN ' + daysAway + ' DAYS';
+      }
+    }
+  });
+}
 });
