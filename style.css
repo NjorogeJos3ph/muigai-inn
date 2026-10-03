@@ -2,9 +2,10 @@
   --bg: #1C1207;
   --surface: #2A1A0C;
   --surface-2: #362210;
-  --amber: #E5A054;
-  --amber-light: #F5BA70;
-  --amber-glow: rgba(229, 160, 84, 0.4);
+  --amber: #D4A24C;
+  --amber-light: #E5B35C;
+  --hot: #B8322A;
+  --hot-light: #CC3D34;
   --cream: #FFF4E0;
   --text: #F5E8CE;
   --muted: #B8A48C;
@@ -622,4 +623,154 @@ img { max-width: 100%; display: block; }
     transform: scale(1.05);
     opacity: 0.9;
   }
+}
+
+/* ===== PREMIUM BUTTON SYSTEM ===== */
+/* Built for ALL readers: high contrast, big text, big tap targets */
+
+/* PRIMARY — main CTAs. Gold background, dark text. Max contrast. */
+.btn-primary {
+  background: var(--amber);
+  color: #1A0E05;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  padding: 18px 32px;
+  border: none;
+  border-radius: 999px;
+  min-height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(212, 162, 76, 0.28);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background: var(--amber-light);
+  box-shadow: 0 6px 22px rgba(212, 162, 76, 0.45);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* SECONDARY — softer CTAs. Outline style, cream text. */
+.btn-secondary {
+  background: transparent;
+  color: #FFF4E0;
+  border: 2px solid rgba(212, 162, 76, 0.55);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 16px 30px;
+  border-radius: 999px;
+  min-height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.btn-secondary:hover,
+.btn-secondary:focus {
+  border-color: var(--amber);
+  color: var(--amber);
+  background: rgba(212, 162, 76, 0.08);
+  outline: none;
+}
+
+/* HOT — urgent/attention. Deep red background, white text. */
+.btn-hot {
+  background: var(--hot);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 14px 26px;
+  border: none;
+  border-radius: 999px;
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(184, 50, 42, 0.35);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.btn-hot:hover,
+.btn-hot:focus {
+  background: var(--hot-light);
+  box-shadow: 0 6px 22px rgba(184, 50, 42, 0.5);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* ===== HEADER CART BUTTON — bigger for drunk/old fingers ===== */
+.cart-button {
+  width: 52px;
+  height: 52px;
+  background: var(--amber);
+  color: #1A0E05;
+  box-shadow: 0 4px 14px rgba(212, 162, 76, 0.35);
+}
+.cart-button:hover {
+  background: var(--amber-light);
+}
+.cart-badge {
+  min-width: 26px;
+  height: 26px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: #1A0E05;
+  color: var(--amber);
+  border: 2px solid var(--amber);
+}
+
+/* ===== MENU + BUTTON — bigger tap target ===== */
+.menu-add {
+  width: 36px;
+  height: 36px;
+  background: var(--amber);
+  color: #1A0E05;
+  font-size: 1.3rem;
+  font-weight: 800;
+  box-shadow: 0 3px 10px rgba(212, 162, 76, 0.3);
+  margin-left: 12px;
+}
+.menu-add:hover {
+  background: var(--amber-light);
+  transform: scale(1.08);
+}
+
+/* ===== FLOATING WHATSAPP — bigger, high contrast ===== */
+.floating-whatsapp {
+  width: 64px;
+  height: 64px;
+  background: var(--amber);
+  color: #1A0E05;
+  box-shadow: 0 8px 24px rgba(212, 162, 76, 0.5);
+}
+
+/* ===== CART CHECKOUT BUTTON ===== */
+.cart-checkout {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 18px 24px;
+  min-height: 56px;
+}
+
+/* ===== NEXT UP BADGE — now red for urgency ===== */
+.next-up-badge {
+  background: var(--hot);
+  color: #FFFFFF;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  padding: 8px 16px;
+  box-shadow: 0 4px 14px rgba(184, 50, 42, 0.5);
+}
+.event-card.next-up {
+  border-color: var(--hot);
+  box-shadow: 0 0 40px rgba(184, 50, 42, 0.18);
+}
+.event-card.next-up .event-day {
+  color: var(--hot-light);
 }
