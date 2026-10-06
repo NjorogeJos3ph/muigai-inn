@@ -775,3 +775,64 @@ img { max-width: 100%; display: block; }
 .event-card.next-up .event-day {
   color: var(--hot-light);
 }
+
+/* ===== FIX: Visit links + floating button overlap ===== */
+.visit-detail a {
+  color: var(--amber);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(212, 162, 76, 0.5);
+  padding-bottom: 1px;
+  font-weight: 600;
+}
+.visit-detail a:hover,
+.visit-detail a:focus {
+  color: var(--amber-light);
+  border-bottom-color: var(--amber-light);
+}
+
+/* Give the visit section padding so the floating button doesn't cover buttons */
+.visit-section {
+  padding-bottom: 120px;
+}
+
+/* Lift the floating WhatsApp button so it doesn't overlap CTAs */
+.floating-whatsapp {
+  bottom: 100px;
+}
+@media (min-width: 640px) {
+  .floating-whatsapp {
+    bottom: 24px;
+  }
+}
+
+/* Make the visit action buttons stack better on narrow screens */
+.visit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+@media (max-width: 480px) {
+  .visit-actions {
+    flex-direction: column;
+  }
+  .visit-actions .btn {
+    width: 100%;
+  }
+}
+/* Fix for link colors */
+.visit-detail a {
+  color: var(--amber) !important;
+  text-decoration: none !important;
+  border-bottom: 1px solid rgba(212, 162, 76, 0.5);
+}
+.visit-detail a:hover {
+  color: var(--amber-light) !important;
+  border-bottom-color: var(--amber-light);
+}
+
+/* Fix for the brand name link */
+.brand {
+  color: var(--amber) !important;
+  text-decoration: none !important;
+}
