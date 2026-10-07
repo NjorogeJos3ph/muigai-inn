@@ -836,3 +836,24 @@ img { max-width: 100%; display: block; }
   color: var(--amber) !important;
   text-decoration: none !important;
 }
+
+/* ===== TRUST BAR ===== */
+.trust-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.trust-bar .sep { color: var(--amber); opacity: 0.6; }
+@media (max-width: 480px) {
+  .trust-bar { font-size: 0.68rem; gap: 8px; padding: 14px 16px; }
+}
