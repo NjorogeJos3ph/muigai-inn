@@ -866,3 +866,51 @@ img { max-width: 100%; display: block; }
   .trust-bar .sep { display: none; }
 }
 
+
+/* ===== BACK TO TOP ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: #1A0E05;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: opacity 0.3s, transform 0.3s, background 0.2s;
+  box-shadow: 0 6px 20px rgba(212, 162, 76, 0.45);
+  z-index: 300;
+}
+.back-to-top.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.back-to-top:hover {
+  background: var(--amber-light);
+  transform: translateY(-2px);
+}
+/* Move floating WhatsApp up when back-to-top is showing */
+.back-to-top.show ~ .floating-whatsapp,
+.floating-whatsapp.with-top {
+  bottom: 100px;
+}
+
+/* Ensure trust bar doesn't duplicate visually on mobile */
+@media (max-width: 480px) {
+  .trust-bar {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.68rem;
+    padding: 14px 16px;
+  }
+  .trust-bar .sep { display: none; }
+}

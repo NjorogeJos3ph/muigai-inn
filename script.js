@@ -138,4 +138,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+/* BACK TO TOP */
+const backBtn = document.getElementById('backToTop');
+const whatsFloat = document.querySelector('.floating-whatsapp');
+if (backBtn) {
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 600) {
+      backBtn.classList.add('show');
+      if (whatsFloat) whatsFloat.style.bottom = '100px';
+    } else {
+      backBtn.classList.remove('show');
+      if (whatsFloat) whatsFloat.style.bottom = '';
+    }
+  });
+  backBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
 });
