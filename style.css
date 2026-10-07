@@ -857,3 +857,12 @@ img { max-width: 100%; display: block; }
 @media (max-width: 480px) {
   .trust-bar { font-size: 0.68rem; gap: 8px; padding: 14px 16px; }
 }
+@media (max-width: 480px) {
+  .trust-bar {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.68rem;
+  }
+  .trust-bar .sep { display: none; }
+}
+
