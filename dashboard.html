@@ -98,7 +98,7 @@ const ITEMS = [
   { id: 'juice', name: 'Juice', price: 200 }
 ];
 
-const state = JSON.parse(localStorage.getItem('muigai-pos') || 'null');
+const state = JSON.parse(localStorage.getItem('muigai-pos-v2') || 'null');
 if (!state) {
   document.querySelector('.container').innerHTML = '<div class="card"><p style="color:var(--muted);">No data yet. Open the POS first to start logging sales.</p></div>';
 } else {
