@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muigai Inn — POS</title>
+<style>
+:root {
+  --bg: #1C1207;
+  --surface: #2A1A0C;
+  --surface-2: #362210;
+  --amber: #D4A24C;
+  --amber-light: #E5B35C;
+  --hot: #B8322A;
+  --green: #2E8B57;
+  --text: #F5E8CE;
+  --muted: #B8A48C;
+  --border: #3D2817;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh; padding-bottom: 120px; }
+
+/* HEADER */
+.pos-header { padding: 14px 16px 10px; background: var(--surface); border-bottom: 2px solid var(--amber); position: sticky; top: 0; z-index: 20; }
+.pos-header h1 { font-size: 1rem; color: var(--amber); letter-spacing: 0.1em; text-align: center; text-transform: uppercase; font-weight: 800; }
+.pos-header .date { text-align: center; font-size: 0.68rem; color: var(--muted); margin-top: 2px; letter-spacing: 0.15em; text-transform: uppercase; }
+
+/* MODE TOGGLE */
+.mode-toggle { display: flex; gap: 8px; padding: 10px 16px; max-width: 780px; margin: 0 auto; }
+.mode-btn { flex: 1; padding: 16px; border: 2px solid var(--border); background: transparent; color: var(--muted); font-family: inherit; font-size: 0.85rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 12px; cursor: pointer; min-height: 54px; }
+.mode-btn.active { background: var(--amber); color: #1A0E05; border-color: var(--amber); box-shadow: 0 4px 16px rgba(212, 162, 76, 0.35); }
+.mode-btn.stock-active { background: var(--hot); color: #FFFFFF; border-color: var(--hot); box-shadow: 0 4px 16px rgba(184, 50, 42, 0.35); }
+
+/* SEARCH */
+.search-wrap { max-width: 780px; margin: 0 auto; padding: 0 16px 12px; }
+.search-input { width: 100%; padding: 16px 20px; background: var(--surface); border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1rem; font-family: inherit; min-height: 54px; }
+.search-input:focus { outline: none; border-color: var(--amber); }
+.search-input::placeholder { color: var(--muted); }
+
+/* CATEGORY TABS */
+.tabs-wrap { position: sticky; top: 108px; z-index: 15; background: var(--bg); border-bottom: 1px solid var(--border); padding: 8px 0; }
+.tabs { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex-shrink: 0; padding: 12px 20px; background: transparent; border: 2px solid var(--border); color: var(--muted); font-family: inherit; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 999px; cursor: pointer; min-height: 46px; white-space: nowrap; }
+.tab.active { background: var(--amber); color: #1A0E05; border-color: var(--amber); }
+
+/* GRID */
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 14px 16px; max-width: 780px; margin: 0 auto; }
+@media (min-width: 560px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 800px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+.item-btn { background: var(--surface); border: 2px solid var(--border); border-radius: 14px; padding: 18px 10px 14px; cursor: pointer; transition: all 0.12s; text-align: center; font-family: inherit; color: var(--text); min-height: 110px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
+.item-btn:active { transform: scale(0.94); border-color: var(--amber); background: var(--surface-2); }
+.item-btn .name { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); margin-bottom: 8px; line-height: 1.2; word-break: break-word; }
+.item-btn .count { font-size: 2rem; font-weight: 900; color: var(--amber); line-height: 1; font-family: 'Arial Black', sans-serif; }
+.item-btn.low .count { color: var(--amber); opacity: 0.85; }
+.item-btn.low { border-color: rgba(184, 50, 42, 0.5); }
+.item-btn.out .count { color: var(--hot); opacity: 0.6; }
+.item-btn.out { opacity: 0.6; }
+
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.9rem; }
+
+/* FOOTER BAR */
+.footer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 2px solid var(--amber); padding: 12px 16px; z-index: 25; }
+.footer-inner { max-width: 780px; margin: 0 auto; display: flex; gap: 10px; align-items: center; }
+.undo-btn { flex: 1; padding: 16px; background: transparent; border: 2px solid var(--border); color: var(--muted); font-family: inherit; font-size: 0.85rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 12px; cursor: pointer; min-height: 54px; }
+.undo-btn:active { border-color: var(--amber); color: var(--amber); }
+.stat-mini { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+.stat-mini strong { display: block; font-size: 1.2rem; color: var(--amber); font-family: 'Arial Black', sans-serif; margin-top: 2px; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--amber); color: #1A0E05; padding: 14px 26px; border-radius: 999px; font-weight: 800; font-size: 0.9rem; opacity: 0; pointer-events: none; transition: all 0.22s; white-space: nowrap; z-index: 100; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.stock { background: var(--hot); color: #FFFFFF; }
+</style>
+</head>
+<body>
+
+<div class="pos-header">
+  <h1>Muigai Inn — POS</h1>
+  <div class="date" id="today">Leo</div>
+</div>
+
+<div class="mode-toggle">
+  <button type="button" class="mode-btn active" id="modeSell">SELL</button>
+  <button type="button" class="mode-btn" id="modeStock">STOCK IN</button>
+</div>
+
+<div class="search-wrap">
+  <input type="text" class="search-input" id="searchInput" placeholder="🔍  Search... (Tusker, Nyama, Coke)">
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="footer-bar">
+  <div class="footer-inner">
+    <button type="button" class="undo-btn" id="undoBtn">↶ Undo</button>
+    <div class="stat-mini">Sold<strong id="totalSold">0</strong></div>
+    <div class="stat-mini">Stock<strong id="totalStock">0</strong></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">+1</div>
+
+<script>
+/* =========================================================
+   ITEMS — replace this list with the Google Sheet later
+   Category | ID | Name | Price | Stock
+========================================================= */
+const ITEMS = [
+  // BEER
+  { id: 'tusker', name: 'Tusker', cat: 'beer', price: 250, stock: 48 },
+  { id: 'whitecap', name: 'White Cap', cat: 'beer', price: 250, stock: 36 },
+  { id: 'pilsner', name: 'Pilsner', cat: 'beer', price: 250, stock: 24 },
+  { id: 'guinness', name: 'Guinness', cat: 'beer', price: 300, stock: 12 },
+  { id: 'balozi', name: 'Balozi', cat: 'beer', price: 220, stock: 24 },
+  { id: 'smirnoffice', name: 'Smirnoff Ice', cat: 'beer', price: 300, stock: 18 },
+  { id: 'tuskerlite', name: 'Tusker Lite', cat: 'beer', price: 250, stock: 12 },
+  { id: 'summit', name: 'Summit', cat: 'beer', price: 220, stock: 24 },
+  { id: 'becks', name: 'Beck\'s', cat: 'beer', price: 350, stock: 6 },
+  { id: 'heineken', name: 'Heineken', cat: 'beer', price: 350, stock: 8 },
+
+  // SPIRITS
+  { id: 'jameson', name: 'Jameson', cat: 'spirits', price: 500, stock: 4 },
+  { id: 'gilbeys', name: 'Gilbey\'s', cat: 'spirits', price: 300, stock: 6 },
+  { id: 'kenyacane', name: 'Kenya Cane', cat: 'spirits', price: 300, stock: 8 },
+  { id: 'chrome', name: 'Chrome', cat: 'spirits', price: 350, stock: 5 },
+  { id: 'bond7', name: 'Bond 7', cat: 'spirits', price: 300, stock: 6 },
+  { id: 'jackdaniels', name: 'Jack Daniel\'s', cat: 'spirits', price: 600, stock: 3 },
+  { id: 'smirnoffvodka', name: 'Smirnoff Vodka', cat: 'spirits', price: 350, stock: 5 },
+  { id: 'captainmorgan', name: 'Captain Morgan', cat: 'spirits', price: 400, stock: 4 },
+  { id: 'grant', name: 'Grant\'s', cat: 'spirits', price: 400, stock: 5 },
+  { id: 'napoleon', name: 'Napoleon', cat: 'spirits', price: 350, stock: 4 },
+
+  // SOFT DRINKS
+  { id: 'coke', name: 'Coke', cat: 'soft', price: 100, stock: 36 },
+  { id: 'cokezero', name: 'Coke Zero', cat: 'soft', price: 100, stock: 24 },
+  { id: 'fanta', name: 'Fanta', cat: 'soft', price: 100, stock: 24 },
+  { id: 'sprite', name: 'Sprite', cat: 'soft', price: 100, stock: 24 },
+  { id: 'novida', name: 'Novida', cat: 'soft', price: 120, stock: 12 },
+  { id: 'krest', name: 'Krest', cat: 'soft', price: 120, stock: 12 },
+  { id: 'water', name: 'Water 500ml', cat: 'soft', price: 80, stock: 36 },
+  { id: 'water1l', name: 'Water 1L', cat: 'soft', price: 130, stock: 24 },
+
+  // NYAMA
+  { id: 'nyamachoma', name: 'Nyama Choma 1kg', cat: 'nyama', price: 700, stock: 10 },
+  { id: 'nyamahalf', name: 'Nyama 1/2kg', cat: 'nyama', price: 400, stock: 12 },
+  { id: 'kukuchoma', name: 'Kuku Choma', cat: 'nyama', price: 600, stock: 8 },
+  { id: 'kukuhalf', name: 'Kuku 1/2', cat: 'nyama', price: 350, stock: 10 },
+  { id: 'mbuzi', name: 'Mbuzi Choma', cat: 'nyama', price: 800, stock: 6 },
+  { id: 'beef', name: 'Beef Choma', cat: 'nyama', price: 700, stock: 8 },
+  { id: 'liver', name: 'Liver', cat: 'nyama', price: 500, stock: 5 },
+  { id: 'matumbo', name: 'Matumbo', cat: 'nyama', price: 450, stock: 6 },
+
+  // FOOD
+  { id: 'chips', name: 'Chips', cat: 'food', price: 200, stock: 20 },
+  { id: 'chipsmasala', name: 'Chips Masala', cat: 'food', price: 300, stock: 15 },
+  { id: 'ugali', name: 'Ugali', cat: 'food', price: 80, stock: 30 },
+  { id: 'sukuma', name: 'Sukuma', cat: 'food', price: 100, stock: 20 },
+  { id: 'ugalisukuma', name: 'Ugali + Sukuma', cat: 'food', price: 150, stock: 25 },
+  { id: 'fish', name: 'Fish', cat: 'food', price: 700, stock: 6 },
+  { id: 'fishchips', name: 'Fish & Chips', cat: 'food', price: 800, stock: 5 },
+  { id: 'kachumbari', name: 'Kachumbari', cat: 'food', price: 50, stock: 30 },
+
+  // SNACKS
+  { id: 'smokie', name: 'Smokie', cat: 'snacks', price: 50, stock: 24 },
+  { id: 'sausage', name: 'Sausage', cat: 'snacks', price: 60, stock: 24 },
+  { id: 'smokieschips', name: 'Smokie + Chips', cat: 'snacks', price: 250, stock: 15 },
+  { id: 'crisps', name: 'Crisps', cat: 'snacks', price: 100, stock: 20 },
+  { id: 'peanuts', name: 'Peanuts', cat: 'snacks', price: 80, stock: 18 },
+  { id: 'bhajia', name: 'Bhajia', cat: 'snacks', price: 200, stock: 12 },
+
+  // JUICE
+  { id: 'freshjuice', name: 'Fresh Juice', cat: 'juice', price: 200, stock: 12 },
+  { id: 'mango', name: 'Mango Juice', cat: 'juice', price: 200, stock: 10 },
+  { id: 'passion', name: 'Passion Juice', cat: 'juice', price: 200, stock: 10 },
+  { id: 'smoothie', name: 'Smoothie', cat: 'juice', price: 300, stock: 8 }
+];
+
+const CATEGORIES = [
+  { id: 'all', name: 'All' },
+  { id: 'beer', name: 'Bia' },
+  { id: 'spirits', name: 'Spirits' },
+  { id: 'soft', name: 'Soft' },
+  { id: 'nyama', name: 'Nyama' },
+  { id: 'food', name: 'Food' },
+  { id: 'snacks', name: 'Snacks' },
+  { id: 'juice', name: 'Juice' }
+];
+
+/* =========================================================
+   STATE
+========================================================= */
+const CART_KEY = 'muigai-pos-v2';
+let state = JSON.parse(localStorage.getItem(CART_KEY) || 'null') || {
+  stock: {},
+  sold: {},
+  added: {},
+  history: [],
+  mode: 'sell',
+  activeCat: 'all',
+  search: ''
+};
+
+// Init stocks from ITEMS if empty
+if (Object.keys(state.stock).length === 0) {
+  ITEMS.forEach(i => { state.stock[i.id] = i.stock; state.sold[i.id] = 0; state.added[i.id] = 0; });
+}
+
+function save() { localStorage.setItem(CART_KEY, JSON.stringify(state)); }
+
+/* =========================================================
+   RENDER
+========================================================= */
+function renderTabs() {
+  const el = document.getElementById('tabs');
+  el.innerHTML = CATEGORIES.map(c =>
+    `<button type="button" class="tab ${state.activeCat === c.id ? 'active' : ''}" data-cat="${c.id}">${c.name}</button>`
+  ).join('');
+  el.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      state.activeCat = t.dataset.cat;
+      state.search = '';
+      document.getElementById('searchInput').value = '';
+      save(); render();
+    });
+  });
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  const q = state.search.trim().toLowerCase();
+
+  let list = ITEMS.filter(i => {
+    if (q) return i.name.toLowerCase().includes(q);
+    if (state.activeCat === 'all') return true;
+    return i.cat === state.activeCat;
+  });
+
+  if (list.length === 0) {
+    grid.innerHTML = '<div class="empty-state">Hakuna item inayolingana.</div>';
+    return;
+  }
+
+  grid.innerHTML = list.map(item => {
+    const stock = state.stock[item.id] || 0;
+    let cls = '';
+    if (stock === 0) cls = 'out';
+    else if (stock <= 3) cls = 'low';
+    return `<button type="button" class="item-btn ${cls}" data-id="${item.id}">
+      <div class="name">${item.name}</div>
+      <div class="count">${stock}</div>
+    </button>`;
+  }).join('');
+
+  grid.querySelectorAll('.item-btn').forEach(btn => {
+    btn.addEventListener('click', () => handleTap(btn.dataset.id));
+  });
+}
+
+function renderFooter() {
+  const totalSold = Object.values(state.sold).reduce((a, b) => a + b, 0);
+  const totalStock = Object.values(state.added).reduce((a, b) => a + b, 0);
+  document.getElementById('totalSold').textContent = totalSold;
+  document.getElementById('totalStock').textContent = totalStock;
+}
+
+function render() {
+  renderTabs();
+  renderGrid();
+  renderFooter();
+  const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
+  document.getElementById('today').textContent = today;
+}
+
+/* =========================================================
+   HANDLERS
+========================================================= */
+function handleTap(id) {
+  const item = ITEMS.find(x => x.id === id);
+  if (!item) return;
+
+  if (state.mode === 'sell') {
+    if ((state.stock[id] || 0) <= 0) { showToast('Hakuna ' + item.name, true); return; }
+    state.stock[id]--;
+    state.sold[id] = (state.sold[id] || 0) + 1;
+    state.history.push({ type: 'sell', id, time: Date.now() });
+    showToast('-1 ' + item.name);
+  } else {
+    state.stock[id] = (state.stock[id] || 0) + 1;
+    state.added[id] = (state.added[id] || 0) + 1;
+    state.history.push({ type: 'stock', id, time: Date.now() });
+    showToast('+1 ' + item.name, true);
+  }
+  save(); render();
+}
+
+function showToast(text, isStock) {
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.toggle('stock', !!isStock);
+  t.classList.add('show');
+  clearTimeout(t._to);
+  t._to = setTimeout(() => t.classList.remove('show'), 1000);
+}
+
+document.getElementById('modeSell').addEventListener('click', () => {
+  state.mode = 'sell'; save();
+  document.getElementById('modeSell').classList.add('active');
+  document.getElementById('modeStock').classList.remove('active', 'stock-active');
+});
+document.getElementById('modeStock').addEventListener('click', () => {
+  state.mode = 'stock'; save();
+  document.getElementById('modeSell').classList.remove('active');
+  document.getElementById('modeStock').classList.add('active', 'stock-active');
+});
+document.getElementById('undoBtn').addEventListener('click', () => {
+  const last = state.history.pop();
+  if (!last) return;
+  if (last.type === 'sell') { state.stock[last.id]++; state.sold[last.id]--; }
+  else { state.stock[last.id]--; state.added[last.id]--; }
+  save(); render();
+});
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  state.search = e.target.value;
+  render();
+});
+
+/* Init mode UI */
+if (state.mode === 'stock') {
+  document.getElementById('modeStock').classList.add('active', 'stock-active');
+  document.getElementById('modeSell').classList.remove('active');
+}
+
+render();
+</script>
+</body>
+</html>

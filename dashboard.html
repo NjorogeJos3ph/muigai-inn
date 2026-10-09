@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muigai Inn — Dashboard</title>
+<style>
+:root {
+  --bg: #1C1207;
+  --surface: #2A1A0C;
+  --surface-2: #362210;
+  --amber: #D4A24C;
+  --amber-light: #E5B35C;
+  --hot: #B8322A;
+  --green: #2E8B57;
+  --text: #F5E8CE;
+  --muted: #B8A48C;
+  --border: #3D2817;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh; padding-bottom: 40px; }
+.header { padding: 22px 20px; background: var(--surface); border-bottom: 2px solid var(--amber); position: sticky; top: 0; z-index: 10; }
+.header h1 { font-size: 1.1rem; color: var(--amber); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 800; text-align: center; }
+.header .sub { text-align: center; font-size: 0.72rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.15em; text-transform: uppercase; }
+
+.container { max-width: 720px; margin: 0 auto; padding: 20px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 14px; }
+.card-label { font-size: 0.65rem; letter-spacing: 0.22em; color: var(--amber); text-transform: uppercase; font-weight: 800; margin-bottom: 14px; }
+.card-value { font-size: 2.4rem; font-weight: 900; color: var(--text); line-height: 1; font-family: 'Arial Black', sans-serif; }
+.card-value.amber { color: var(--amber); }
+.card-value.hot { color: var(--hot); }
+.card-value.green { color: var(--green); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.list { list-style: none; }
+.list li { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+.list li:last-child { border-bottom: none; }
+.list .name { color: var(--text); }
+.list .num { font-weight: 800; color: var(--amber); }
+
+.alert { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: rgba(184, 50, 42, 0.1); border-left: 3px solid var(--hot); border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem; }
+.alert .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--hot); flex-shrink: 0; }
+.alert.ok { background: rgba(46, 139, 87, 0.1); border-left-color: var(--green); }
+.alert.ok .dot { background: var(--green); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Muigai Inn — Dashboard</h1>
+  <div class="sub" id="today">Leo</div>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="card-label">Sales leo · Today</div>
+    <div class="card-value amber" id="salesToday">KES 0</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-label">Items Sold</div>
+      <div class="card-value" id="itemsSold">0</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Stock Added</div>
+      <div class="card-value" id="stockAdded">0</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Top Seller</div>
+    <div class="card-value" id="topSeller">—</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Stock Alerts</div>
+    <div id="alerts"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">By Item</div>
+    <ul class="list" id="byItem"></ul>
+  </div>
+
+</div>
+
+<script>
+const ITEMS = [
+  { id: 'bia', name: 'Bia', price: 250 },
+  { id: 'soda', name: 'Soda', price: 100 },
+  { id: 'nyama', name: 'Nyama', price: 700 },
+  { id: 'kuku', name: 'Kuku', price: 600 },
+  { id: 'chips', name: 'Chips', price: 300 },
+  { id: 'juice', name: 'Juice', price: 200 }
+];
+
+const state = JSON.parse(localStorage.getItem('muigai-pos') || 'null');
+if (!state) {
+  document.querySelector('.container').innerHTML = '<div class="card"><p style="color:var(--muted);">No data yet. Open the POS first to start logging sales.</p></div>';
+} else {
+  let totalSales = 0;
+  ITEMS.forEach(item => {
+    const sold = state.sold[item.id] || 0;
+    totalSales += sold * item.price;
+  });
+
+  document.getElementById('salesToday').textContent = 'KES ' + totalSales.toLocaleString();
+  document.getElementById('itemsSold').textContent = Object.values(state.sold).reduce((a, b) => a + b, 0);
+  document.getElementById('stockAdded').textContent = Object.values(state.added).reduce((a, b) => a + b, 0);
+
+  // Top seller
+  let top = null, topCount = 0;
+  ITEMS.forEach(item => {
+    const sold = state.sold[item.id] || 0;
+    if (sold > topCount) { topCount = sold; top = item; }
+  });
+  document.getElementById('topSeller').textContent = top ? `${top.name} (${topCount})` : '—';
+
+  // Alerts
+  const alertsEl = document.getElementById('alerts');
+  let hasAlert = false;
+  ITEMS.forEach(item => {
+    const stock = state.stock[item.id] || 0;
+    if (stock === 0) {
+      alertsEl.innerHTML += `<div class="alert"><span class="dot"></span> ${item.name} — OUT of stock</div>`;
+      hasAlert = true;
+    } else if (stock <= 3) {
+      alertsEl.innerHTML += `<div class="alert"><span class="dot"></span> ${item.name} — only ${stock} left</div>`;
+      hasAlert = true;
+    }
+  });
+  if (!hasAlert) {
+    alertsEl.innerHTML = '<div class="alert ok"><span class="dot"></span> All items in stock</div>';
+  }
+
+  // By item
+  const byItem = document.getElementById('byItem');
+  ITEMS.forEach(item => {
+    const sold = state.sold[item.id] || 0;
+    const stock = state.stock[item.id] || 0;
+    byItem.innerHTML += `<li><span class="name">${item.name}</span><span class="num">${sold} sold · ${stock} left</span></li>`;
+  });
+
+  // Date
+  const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
+  document.getElementById('today').textContent = today;
+}
+</script>
+</body>
+</html>
