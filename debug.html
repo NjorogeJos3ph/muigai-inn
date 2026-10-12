@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Debug</title>
+<style>
+body { background: #1C1207; color: #F5E8CE; font-family: monospace; padding: 20px; font-size: 14px; line-height: 1.7; }
+h1 { color: #D4A24C; font-size: 16px; margin-bottom: 16px; }
+.box { background: #2A1A0C; border: 1px solid #3D2817; border-radius: 8px; padding: 14px; margin-bottom: 12px; }
+button { background: #D4A24C; color: #1A0E05; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 700; font-size: 14px; margin: 4px; }
+.warn { color: #B8322A; }
+.ok { color: #2E8B57; }
+</style>
+</head>
+<body>
+<h1>Debug — localStorage</h1>
+
+<div class="box">
+  <strong>Keys in storage:</strong>
+  <div id="keys">loading…</div>
+</div>
+
+<div class="box">
+  <strong>muigai-pos-v3 data:</strong>
+  <pre id="v3data" style="white-space:pre-wrap; font-size:12px;">loading…</pre>
+</div>
+
+<div class="box">
+  <strong>muigai-pos-v2 data (old):</strong>
+  <pre id="v2data" style="white-space:pre-wrap; font-size:12px;">loading…</pre>
+</div>
+
+<div class="box">
+  <button onclick="addTest()">Add Test Data</button>
+  <button onclick="clearAll()">Clear All</button>
+  <button onclick="location.href='dashboard.html'">Go to Dashboard</button>
+  <button onclick="location.href='pos.html'">Go to POS</button>
+</div>
+
+<script>
+function show() {
+  const keys = Object.keys(localStorage);
+  document.getElementById('keys').innerHTML = keys.length ? keys.join('<br>') : '<span class="warn">EMPTY — no keys at all</span>';
+  const v3 = localStorage.getItem('muigai-pos-v3');
+  document.getElementById('v3data').textContent = v3 || '(nothing)';
+  const v2 = localStorage.getItem('muigai-pos-v2');
+  document.getElementById('v2data').textContent = v2 ? v2.substring(0, 200) + '…' : '(nothing)';
+}
+function addTest() {
+  const fake = { stock: { tusker: 45 }, sold: { tusker: 3 }, added: {}, history: [], mode: 'sell', activeCat: 'all', search: '' };
+  localStorage.setItem('muigai-pos-v3', JSON.stringify(fake));
+  show();
+}
+function clearAll() {
+  localStorage.clear();
+  show();
+}
+show();
+</script>
+</body>
+</html>
